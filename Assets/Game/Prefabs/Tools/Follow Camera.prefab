@@ -46,15 +46,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   paused: 0
+  satellite: {fileID: 0}
   height: 6
   radius: 6
   yaw: 0
-  cam: {fileID: 0}
   followDamping: 16
   lookDamping: 0
-  offset: {x: 0, y: 1.6, z: 0}
+  avoidObstacles: 1
+  cameraSize: 0.4
+  obstaclesLayer:
+    serializedVersion: 2
+    m_Bits: 1
+  maxAvoidDistance: 10
   followAt: {fileID: 0}
   lookAt: {fileID: 0}
+  localOffset: {x: 0, y: 1.6, z: 0}
+  axis: {x: 0, y: 1, z: 0}
+  _distance: 8.485281
+  _pitch: 45
 --- !u!114 &4131291072525015621
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -67,9 +76,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a365a744db5b4d2c923644aecf787b53, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  distance: 0
-  angle: 0
-  rotation: 0
   zoomSpeed: 0.5
   rotateSpeed: 4
-  follow: {fileID: 4482602863926437615}
+  cursorLockMode: 2

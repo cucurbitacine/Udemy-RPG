@@ -20,19 +20,32 @@ namespace Game.Core
         [Header("Dumping")]
         [Min(0)] public float followDamping = 16;
         [Min(0)] public float lookDamping = 0f;
+
+        [Header("Physics")]
+        public bool avoidObstacles = false;
+        [Min(0f)] public float cameraSize = 0.4f;
+        public LayerMask obstaclesLayer = 1;
+        [Min(0f)] public float maxAvoidDistance = 10f;
         
         [Header("Follow")]
         public Transform followAt = null;
         public Transform lookAt = null;
         
         [Space]
-        public Vector3 offset = Vector3.zero;
+        public Vector3 localOffset = Vector3.zero;
         public Vector3 axis = Vector3.up;
-        
+
+#if UNITY_EDITOR
+        [Header("Information")]
+        [SerializeField] private float _distance; 
+        [SerializeField] private float _pitch; 
+#endif
+            
         #endregion
 
         #region Public API
 
+        public Vector3 offset => followAt ? followAt.TransformVector(localOffset) : localOffset;
         public Vector3 followAtPoint => (followAt ? followAt.position : Vector3.zero) + offset;
         public Vector3 lookAtPoint => lookAt ? lookAt.position : followAtPoint;
         
@@ -78,15 +91,33 @@ namespace Game.Core
 
         private void InitCamera()
         {
-            if (satellite == null) satellite = Camera.main ? Camera.main.transform : null;
+            if (!satellite) satellite = Camera.main ? Camera.main.transform : transform;
         }
-
+        
         private Vector3 EvaluateCameraPosition()
         {
             var direction = Quaternion.AngleAxis(yaw, axis) * Vector3.forward;
             var arm = direction * radius + axis * height;
+            var position = followAtPoint + arm;
 
-            return followAtPoint + arm;
+            if (avoidObstacles)
+            {
+                var rayDistance = arm.magnitude;
+                
+                if (rayDistance < maxAvoidDistance)
+                {
+                    var cameraRadius = cameraSize * 0.5f;
+                    var rayDirection = arm.normalized;
+                
+                    var ray = new Ray(followAtPoint, rayDirection);
+                    if (Physics.SphereCast(ray, cameraRadius, out var hit, rayDistance, obstaclesLayer))
+                    {
+                        position = hit.point + hit.normal * cameraRadius;
+                    }
+                }
+            }
+            
+            return position;
         }
         
         private Quaternion EvaluateCameraRotation(Vector3 cameraPosition)
@@ -132,6 +163,11 @@ namespace Game.Core
         private void LateUpdate()
         {
             UpdateCamera(Time.deltaTime);
+
+#if UNITY_EDITOR
+            _distance = distance;
+            _pitch = pitch;
+#endif
         }
 
         private void OnValidate()
@@ -147,15 +183,15 @@ namespace Game.Core
             var pointUnderCameraOnSurface = followAtPoint + Vector3.ProjectOnPlane(cameraPoint - followAtPoint, axis);
             
             Gizmos.color = Color.red;
-            Gizmos.DrawWireSphere(followAtPoint, 0.1f);
+            Gizmos.DrawWireSphere(followAtPoint, cameraSize * 0.5f);
             Gizmos.DrawLine(followAtPoint, pointUnderCameraOnSurface);
 
             Gizmos.color = Color.green;
-            Gizmos.DrawWireSphere(cameraPoint, 0.1f);
+            Gizmos.DrawWireSphere(cameraPoint, cameraSize * 0.5f);
             Gizmos.DrawLine(pointUnderCameraOnSurface, cameraPoint);
             
             Gizmos.color = Color.blue;
-            Gizmos.DrawWireSphere(lookAtPoint, 0.1f);
+            Gizmos.DrawWireSphere(lookAtPoint, cameraSize * 0.5f);
             Gizmos.DrawLine(cameraPoint, lookAtPoint);
             
             Gizmos.color = Color.yellow;

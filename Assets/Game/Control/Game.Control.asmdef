@@ -1,0 +1,4 @@
+{
+	"name": "Game.Control",
+	"references":[ "GUID:28813113828555547a6925f79cbecb60", "GUID:4151e6d0cb0455940a08b7f7fbcd017c", "GUID:9f1c8457283a43f4f8d37c929da5f0b3" ]
+}

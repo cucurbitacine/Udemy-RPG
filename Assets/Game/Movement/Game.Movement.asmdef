@@ -1,0 +1,16 @@
+{
+    "name": "Game.Movement",
+    "rootNamespace": "",
+    "references": [
+        "GUID:28813113828555547a6925f79cbecb60"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
