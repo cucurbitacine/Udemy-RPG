@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -6,24 +5,30 @@ namespace Game.Characters
 {
     public class Movement : MonoBehaviour
     {
-        public Vector3 destination;
-
         [Space] public NavMeshAgent agent;
-
-        public Vector3 position => agent ? agent.transform.position : transform.position;
         
         #region Public API
 
-        public void SetDestination(Vector3 point)
-        {
-            destination = point;
-        }
-
-        public void Move()
+        public void Move(Vector3 offset)
         {
             if (agent)
             {
-                agent.isStopped = false;
+                if (agent.hasPath)
+                {
+                    agent.ResetPath();
+                }
+                
+                agent.Move(offset * Time.deltaTime);
+                
+                agent.velocity = offset * agent.speed;
+            }
+        }
+        
+        public void MoveAt(Vector3 point)
+        {
+            if (agent)
+            {
+                agent.SetDestination(point);
             }
         }
 
@@ -31,37 +36,18 @@ namespace Game.Characters
         {
             if (agent)
             {
-                agent.isStopped = true;
+                if (agent.hasPath)
+                {
+                    agent.ResetPath();
+                }
             }
         }
-
-        public void MoveAt(Vector3 point)
-        {
-            SetDestination(point);
-
-            Move();
-        }
-
+        
         #endregion
         
-        private void ProcessAgent()
-        {
-            if (agent && !agent.isStopped)
-            {
-                agent.SetDestination(destination);
-            }
-        }
-
         private void Awake()
         {
             if (agent == null) agent = GetComponent<NavMeshAgent>();
-
-            destination = position;
-        }
-
-        private void Update()
-        {
-            ProcessAgent();
         }
     }
 }
