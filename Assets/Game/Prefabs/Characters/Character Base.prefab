@@ -368,7 +368,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5efd63751c96458f8c0c81033e36e98c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 100
+  points: 100
+  isDied: 0
 --- !u!114 &4407563550719723948
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -383,6 +384,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cooldown: 1
   attackRange: 1
+  damage: 25
   target: {fileID: 0}
 --- !u!114 &766928270640971544
 MonoBehaviour:

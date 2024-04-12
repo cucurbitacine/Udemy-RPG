@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Game.Control.Inputs
+namespace Game.Control.Player.Inputs
 {
     public class PlayerInputGroup : PlayerInput
     {

@@ -3,7 +3,7 @@ using Game.Core;
 using Game.Movement;
 using UnityEngine;
 
-namespace Game.Control
+namespace Game.Control.Player
 {
     public class PlayerController : MonoBehaviour
     {
@@ -11,12 +11,13 @@ namespace Game.Control
 
         [Space]
         public GameObject playerObject;
+        public FollowCamera follow;
         
         public MovementController movement { get; private set; }
         public Fighter fighter { get; private set; }
         public CombatTarget target { get; private set; }
         public ActionSchedule schedule { get; private set; }
-
+        
         private void Awake()
         {
             if (playerObject)
@@ -25,12 +26,17 @@ namespace Game.Control
                 fighter = playerObject.GetComponent<Fighter>();
                 target = playerObject.GetComponent<CombatTarget>();
                 schedule = playerObject.GetComponent<ActionSchedule>();
+
+                if (follow)
+                {
+                    follow.followAt = playerObject.transform;
+                }
             }
         }
 
         private void Update()
         {
-            if (input)
+            if (input && target && target.health && !target.health.isDied)
             {
                 input.Process(this);
             }

@@ -1,7 +1,7 @@
 using Game.Core;
 using UnityEngine;
 
-namespace Game.Control.Inputs
+namespace Game.Control.Player.Inputs
 {
     public class CameraInput : MonoBehaviour
     {

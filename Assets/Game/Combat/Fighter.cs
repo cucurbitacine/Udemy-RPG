@@ -1,19 +1,28 @@
+using System;
 using Game.Core;
 using Game.Movement;
 using UnityEngine;
 
 namespace Game.Combat
 {
+    [RequireComponent(typeof(Animator))]
+    [RequireComponent(typeof(MovementController))]
+    [RequireComponent(typeof(CombatTarget))]
     public class Fighter : MonoBehaviour, IActor
     {
         public float cooldown = 1f;
         public float attackRange = 1f;
         public float damage = 5f;
+
+        [Space]
+        public float lastTargetTimeSeen = 0f;
+        public Vector3 lastTargetPosition = Vector3.zero;
         
         [Space]
         public CombatTarget target;
         
         public MovementController movement { get; private set; }
+        public CombatTarget selfTarget { get; private set; }
         public Animator animator { get; private set; }
 
         private float _lastAttack = float.MinValue;
@@ -23,8 +32,14 @@ namespace Game.Combat
 
         public bool CanAttack(CombatTarget combatTarget)
         {
-            if (combatTarget == null) return false;
-            return combatTarget.health.points > 0;
+            if (combatTarget)
+            {
+                if (combatTarget == selfTarget) return false;
+                
+                return combatTarget.health.points > 0;
+            }
+
+            return false;
         }
         
         public void Attack()
@@ -56,16 +71,23 @@ namespace Game.Combat
 
         public void Attack(CombatTarget combatTarget)
         {
-            target = combatTarget;
+            if (combatTarget)
+            {
+                lastTargetTimeSeen = Time.time;
+                target = combatTarget;
+            }
         }
 
         public void ResetTarget()
         {
-            target = null;
-            
-            if (animator)
+            if (target)
             {
-                animator.SetTrigger(TriggerStopAttack);
+                target = null;
+            
+                if (animator)
+                {
+                    animator.SetTrigger(TriggerStopAttack);
+                }
             }
         }
 
@@ -87,12 +109,15 @@ namespace Game.Combat
         {
             movement = GetComponent<MovementController>();
             animator = GetComponent<Animator>();
+            selfTarget = GetComponent<CombatTarget>();
         }
 
         private void Update()
         {
             if (target && movement)
             {
+                lastTargetPosition = target.transform.position;
+                
                 if (Vector3.Distance(movement.position, target.transform.position) < attackRange)
                 {
                     movement.Stop();
@@ -111,6 +136,18 @@ namespace Game.Combat
                     }
                 }
             }
+        }
+
+        private void OnDrawGizmosSelected()
+        {
+            if (lastTargetTimeSeen > 0f)
+            {
+                Gizmos.color = Color.yellow;
+                Gizmos.DrawWireSphere(lastTargetPosition, 0.2f);
+            }
+            
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(transform.position, attackRange);
         }
     }
 }

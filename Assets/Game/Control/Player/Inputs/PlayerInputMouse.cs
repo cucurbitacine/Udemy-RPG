@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Game.Control.Inputs
+namespace Game.Control.Player.Inputs
 {
     public class PlayerInputMouse : PlayerInput
     {
@@ -15,7 +15,7 @@ namespace Game.Control.Inputs
 
                 if (Physics.Raycast(ray, out var hit, maxDistance, layerMask))
                 {
-                    player.schedule.StartAction(player.movement, movement => movement.MoveAt(hit.point));
+                    player.schedule.Run(player.movement, movement => movement.MoveAt(hit.point));
                     
                     return true;
                 }
@@ -23,7 +23,7 @@ namespace Game.Control.Inputs
 
             if (Input.GetAxisRaw("Fire3") > 0f)
             {
-                player.schedule.StartAction(player.movement, movement => movement.Stop());
+                player.schedule.Run(player.movement, movement => movement.Stop());
             }
             
             return false;

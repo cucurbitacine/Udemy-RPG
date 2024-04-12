@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Game.Control
+namespace Game.Control.Player
 {
     public abstract class PlayerInput : MonoBehaviour
     {

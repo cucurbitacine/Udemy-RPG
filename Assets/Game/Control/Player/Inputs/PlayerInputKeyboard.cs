@@ -1,7 +1,6 @@
-using Game.Movement;
 using UnityEngine;
 
-namespace Game.Control.Inputs
+namespace Game.Control.Player.Inputs
 {
     public class PlayerInputKeyboard : PlayerInput
     {
@@ -24,7 +23,7 @@ namespace Game.Control.Inputs
                 
                 move = right * move.x + forward * move.z;
 
-                player.schedule.StartAction(player.movement, t => t.Move(move));
+                player.schedule.Run(player.movement, t => t.Move(move));
                 return true;
             }
 

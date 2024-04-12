@@ -2,6 +2,8 @@ using UnityEngine;
 
 namespace Game.Movement
 {
+    [RequireComponent(typeof(Animator))]
+    [RequireComponent(typeof(MovementController))]
     public class MovementAnimation : MonoBehaviour
     {
         public Animator animator { get; private set; }

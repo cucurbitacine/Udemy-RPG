@@ -1,12 +1,16 @@
+using System;
 using Game.Core;
 using UnityEngine;
 using UnityEngine.AI;
 
 namespace Game.Movement
 {
+    [RequireComponent(typeof(NavMeshAgent))]
+    [RequireComponent(typeof(Health))]
     public class MovementController : MonoBehaviour, IActor
     {
         public NavMeshAgent agent { get; private set; }
+        public Health health { get; private set; }
         
         #region Public API
 
@@ -16,12 +20,9 @@ namespace Game.Movement
         {
             if (agent)
             {
-                if (agent.hasPath)
-                {
-                    agent.ResetPath();
-                }
-                
-                agent.Move(offset * Time.deltaTime);
+                agent.ResetPath();
+
+                offset = Vector3.ClampMagnitude(offset, 1f);
                 
                 agent.velocity = offset * agent.speed;
             }
@@ -64,8 +65,10 @@ namespace Game.Movement
         private void Awake()
         {
             agent = GetComponent<NavMeshAgent>();
+            health = GetComponent<Health>();
+            health.onDied.AddListener(() => agent.enabled = false);
         }
-
+        
         private void OnDrawGizmosSelected()
         {
             if (agent && agent.hasPath)

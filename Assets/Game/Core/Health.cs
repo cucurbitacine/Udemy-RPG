@@ -1,16 +1,22 @@
 using UnityEngine;
+using UnityEngine.Events;
 
-namespace Game.Combat
+namespace Game.Core
 {
+    [RequireComponent(typeof(Animator))]
+    [RequireComponent(typeof(ActionSchedule))]
     public class Health : MonoBehaviour
     {
         public float points = 100f;
         
         public bool isDied = false;
+
+        [Space] public UnityEvent onDied = new UnityEvent();
         
         private static readonly int TriggerDeath = Animator.StringToHash("Death");
 
         public Animator animator { get; private set; }
+        public ActionSchedule schedule { get; private set; }
         
         public void Damage(float amount)
         {
@@ -27,14 +33,19 @@ namespace Game.Combat
 
         public void Die()
         {
-            if(isDied) return;
+            if (isDied) return;
+            
             isDied = true;
             animator.SetTrigger(TriggerDeath);
+            schedule.CancelCurrentActor();
+            
+            onDied.Invoke();
         }
         
         private void Awake()
         {
             animator = GetComponent<Animator>();
+            schedule = GetComponent<ActionSchedule>();
         }
     }
 }

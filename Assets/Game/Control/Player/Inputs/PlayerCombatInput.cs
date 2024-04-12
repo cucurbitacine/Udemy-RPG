@@ -1,7 +1,7 @@
 using Game.Combat;
 using UnityEngine;
 
-namespace Game.Control.Inputs
+namespace Game.Control.Player.Inputs
 {
     public class PlayerCombatInput : PlayerInput
     {
@@ -11,16 +11,20 @@ namespace Game.Control.Inputs
         [Space]
         public KeyCode attackKey = KeyCode.F;
 
+        private float _lastFire;
+        
         public override bool Process(PlayerController player)
         {
             if (Input.GetKeyDown(attackKey))
             {
-                player.schedule.StartAction(player.fighter, f => f.Attack());
+                player.schedule.Run(player.fighter, f => f.Attack());
                 
                 return true;
             }
 
-            if (Input.GetAxisRaw("Fire1") > 0f)
+            var fire = Input.GetAxisRaw("Fire1");
+            
+            if (_lastFire < fire)
             {
                 var ray = cameraMain.ScreenPointToRay(Input.mousePosition);
 
@@ -28,9 +32,9 @@ namespace Game.Control.Inputs
                 {
                     if (hit.transform.TryGetComponent<CombatTarget>(out var target))
                     {
-                        if (player.fighter.CanAttack(target) && target != player.target)
+                        if (player.fighter.CanAttack(target))
                         {
-                            player.schedule.StartAction(player.fighter, f => f.Attack(target));
+                            player.schedule.Run(player.fighter, f => f.Attack(target));
                             
                             return true;
                         }
@@ -39,6 +43,8 @@ namespace Game.Control.Inputs
                 
                 player.fighter.ResetTarget();
             }
+
+            _lastFire = fire;
 
             return false;
         }

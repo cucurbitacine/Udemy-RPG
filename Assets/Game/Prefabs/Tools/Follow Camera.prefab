@@ -52,7 +52,7 @@ MonoBehaviour:
   yaw: 0
   followDamping: 16
   lookDamping: 0
-  avoidObstacles: 1
+  avoidObstacles: 0
   cameraSize: 0.4
   obstaclesLayer:
     serializedVersion: 2

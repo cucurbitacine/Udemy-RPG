@@ -7,12 +7,12 @@ namespace Game.Core
     {
         public IActor currentActor { get; private set; }
 
-        public void StartAction<T>(T actor, Action<T> action) where T : IActor
+        public bool Run<T>(T actor, Action<T> action) where T : IActor
         {
-            StartAction(actor, () => action.Invoke(actor));
+            return Run(actor, () => action.Invoke(actor));
         }
         
-        public void StartAction(IActor actor, Action action)
+        public bool Run(IActor actor, Action action = null)
         {
             if (currentActor != null)
             {
@@ -23,7 +23,14 @@ namespace Game.Core
             }
             
             currentActor = actor;
-            action.Invoke();
+            action?.Invoke();
+            
+            return true;
+        }
+
+        public void CancelCurrentActor()
+        {
+            Run(null);
         }
     }
     
