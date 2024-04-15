@@ -1,0 +1,17 @@
+{
+    "name": "Game.Cinematics",
+    "rootNamespace": "",
+    "references": [
+        "GUID:28813113828555547a6925f79cbecb60",
+        "GUID:8b4438aa11ff9cc4dae72c103c302c48"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -4,20 +4,23 @@ namespace Game.Control.AI.States
 {
     public class AIPatrolState : AIState
     {
-        public int index = 0;
-        public float threshold = 0.1f;
+        public float patrolSpeed = 2;
         public float waitingTime = 3f;
+        public float threshold = 0.1f;
         
         [Space]
         public PatrolPath path;
 
+        private int _index = 0;
         private float _timeStop = float.MinValue;
         
         public override bool Process(AIController ai)
         {
+            ai.movement.agent.speed = patrolSpeed;
+            
             if (path && path.points.Count > 0)
             {
-                var point = path.points[index];
+                var point = path.points[_index];
                 if (point)
                 {
                     var origin = Vector3.ProjectOnPlane(ai.movement.position, Vector3.up);
@@ -36,7 +39,7 @@ namespace Game.Control.AI.States
                         return true;
                     }
                     
-                    index = (index + 1) % path.points.Count;
+                    _index = (_index + 1) % path.points.Count;
                 }
             }
             else

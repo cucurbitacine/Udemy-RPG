@@ -91,7 +91,15 @@ namespace Game.Core
 
         private void InitCamera()
         {
-            if (!satellite) satellite = Camera.main ? Camera.main.transform : transform;
+            if (!satellite)
+            {
+                satellite = Camera.main ? Camera.main.transform : transform;
+            }
+
+            if (satellite)
+            {
+                UpdateCamera(0f);
+            }
         }
         
         private Vector3 EvaluateCameraPosition()
@@ -173,8 +181,6 @@ namespace Game.Core
         private void OnValidate()
         {
             InitCamera();
-            
-            UpdateCamera(0f);
         }
 
         private void OnDrawGizmosSelected()

@@ -6,6 +6,7 @@ namespace Game.Control.AI.States
 {
     public class AICombatState : AIState
     {
+        public float chaseSpeed = 4;
         public float chaseDistance = 5f;
 
         [Space]
@@ -13,6 +14,8 @@ namespace Game.Control.AI.States
         
         public override bool Process(AIController ai)
         {
+            ai.movement.agent.speed = chaseSpeed;
+            
             if (player && IsValidDistance(ai.fighter.transform, player.transform))
             {
                 if (ai.fighter.CanAttack(player))

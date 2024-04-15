@@ -370,6 +370,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   points: 100
   isDied: 0
+  onDied:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &4407563550719723948
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -384,7 +387,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cooldown: 1
   attackRange: 1
-  damage: 25
+  damage: 10
+  lastTargetTimeSeen: 0
+  lastTargetPosition: {x: 0, y: 0, z: 0}
   target: {fileID: 0}
 --- !u!114 &766928270640971544
 MonoBehaviour:

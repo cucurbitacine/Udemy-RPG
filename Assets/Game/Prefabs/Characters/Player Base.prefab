@@ -8,6 +8,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1790901695320031130, guid: 5835736e083fea441bc0212a190d34ce,
+        type: 3}
+      propertyPath: points
+      value: 200
+      objectReference: {fileID: 0}
     - target: {fileID: 2992846689444195175, guid: 5835736e083fea441bc0212a190d34ce,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -60,8 +65,8 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4407563550719723948, guid: 5835736e083fea441bc0212a190d34ce,
         type: 3}
-      propertyPath: damage
-      value: 50
+      propertyPath: attackRange
+      value: 1.25
       objectReference: {fileID: 0}
     - target: {fileID: 6737915270266544537, guid: 5835736e083fea441bc0212a190d34ce,
         type: 3}
@@ -76,7 +81,7 @@ PrefabInstance:
     - target: {fileID: 8292277377376639556, guid: 5835736e083fea441bc0212a190d34ce,
         type: 3}
       propertyPath: m_Name
-      value: Player
+      value: Player Base
       objectReference: {fileID: 0}
     - target: {fileID: 8292277377376639556, guid: 5835736e083fea441bc0212a190d34ce,
         type: 3}

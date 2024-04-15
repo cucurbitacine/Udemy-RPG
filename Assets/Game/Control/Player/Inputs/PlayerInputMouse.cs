@@ -9,7 +9,7 @@ namespace Game.Control.Player.Inputs
 
         public override bool Process(PlayerController player)
         {
-            if (Input.GetAxisRaw("Fire1") > 0f)
+            if (Cursor.visible && Input.GetAxisRaw("Fire1") > 0f)
             {
                 var ray = cameraMain.ScreenPointToRay(Input.mousePosition);
 

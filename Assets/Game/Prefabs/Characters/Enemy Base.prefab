@@ -80,6 +80,11 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 1790901695320031130, guid: 5835736e083fea441bc0212a190d34ce,
+        type: 3}
+      propertyPath: points
+      value: 40
+      objectReference: {fileID: 0}
     - target: {fileID: 2992846689444195175, guid: 5835736e083fea441bc0212a190d34ce,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -130,6 +135,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4407563550719723948, guid: 5835736e083fea441bc0212a190d34ce,
+        type: 3}
+      propertyPath: attackRange
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6737915270266544537, guid: 5835736e083fea441bc0212a190d34ce,
         type: 3}
       propertyPath: m_Avatar
@@ -143,7 +153,7 @@ PrefabInstance:
     - target: {fileID: 8292277377376639556, guid: 5835736e083fea441bc0212a190d34ce,
         type: 3}
       propertyPath: m_Name
-      value: Enemy
+      value: Enemy Base
       objectReference: {fileID: 0}
     - target: {fileID: 8804130579999349832, guid: 5835736e083fea441bc0212a190d34ce,
         type: 3}
