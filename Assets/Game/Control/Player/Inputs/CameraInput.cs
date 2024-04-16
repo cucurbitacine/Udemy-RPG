@@ -1,3 +1,4 @@
+using System;
 using Game.Core;
 using UnityEngine;
 
@@ -60,6 +61,11 @@ namespace Game.Control.Player.Inputs
             follow = GetComponent<FollowCamera>();
 
             Cursor.lockState = cursorLockMode;
+        }
+
+        private void OnDisable()
+        {
+            Cursor.visible = true;
         }
 
         private void Update()
