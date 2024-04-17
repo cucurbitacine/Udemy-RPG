@@ -1,3 +1,4 @@
+using Game.Saving;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -5,7 +6,7 @@ namespace Game.Core
 {
     [RequireComponent(typeof(Animator))]
     [RequireComponent(typeof(ActionSchedule))]
-    public class Health : MonoBehaviour
+    public class Health : MonoBehaviour, ISaveable
     {
         public float points = 100f;
         
@@ -46,6 +47,24 @@ namespace Game.Core
         {
             animator = GetComponent<Animator>();
             schedule = GetComponent<ActionSchedule>();
+        }
+
+        public object CaptureState()
+        {
+            return points;
+        }
+
+        public void RestoreState(object state)
+        {
+            if (state is float value)
+            {
+                points = value;
+                
+                if (points == 0f)
+                {
+                    Die();
+                }
+            }
         }
     }
 }

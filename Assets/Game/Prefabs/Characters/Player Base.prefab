@@ -68,6 +68,11 @@ PrefabInstance:
       propertyPath: attackRange
       value: 1.25
       objectReference: {fileID: 0}
+    - target: {fileID: 6646410535669769590, guid: 5835736e083fea441bc0212a190d34ce,
+        type: 3}
+      propertyPath: _guid
+      value: Player
+      objectReference: {fileID: 0}
     - target: {fileID: 6737915270266544537, guid: 5835736e083fea441bc0212a190d34ce,
         type: 3}
       propertyPath: m_Avatar

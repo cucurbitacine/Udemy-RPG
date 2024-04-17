@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using UnityEngine;
 
@@ -7,6 +6,8 @@ namespace Game.SceneManagement
     [RequireComponent(typeof(CanvasGroup))]
     public class Fader : MonoBehaviour
     {
+        public static Fader Singleton { get; private set; }
+        
         public bool fadeOutOnStart = true;
         public float fadeDuration = 1f;
 
@@ -39,20 +40,34 @@ namespace Game.SceneManagement
         {
             begin = Mathf.Clamp01(begin);
             end = Mathf.Clamp01(end);
-            duration = Mathf.Max(duration, 0.001f);
 
-            var time = 0f;
-            while (time < duration)
+            if (duration > 0.001f)
             {
-                var t = time / duration;
+                var time = 0f;
+                while (time < duration)
+                {
+                    var t = time / duration;
 
-                canvasGroup.alpha = Mathf.Lerp(begin, end, t);
+                    canvasGroup.alpha = Mathf.Lerp(begin, end, t);
 
-                time += Time.deltaTime;
-                yield return null;
+                    time += Time.deltaTime;
+                    yield return null;
+                }
             }
 
             canvasGroup.alpha = end;
+        }
+
+        private void Awake()
+        {
+            if (Singleton)
+            {
+                Destroy(gameObject);
+            }
+            else
+            {
+                Singleton = this;
+            }
         }
 
         private void Start()

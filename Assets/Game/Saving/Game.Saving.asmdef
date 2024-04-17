@@ -1,10 +1,7 @@
 {
-    "name": "Game.Movement",
+    "name": "Game.Saving",
     "rootNamespace": "",
-    "references": [
-        "GUID:28813113828555547a6925f79cbecb60",
-        "GUID:ce099bd54cc5f484698a67e4204f4003"
-    ],
+    "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

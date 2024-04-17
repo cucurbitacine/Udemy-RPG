@@ -1,5 +1,6 @@
-using System;
 using Game.Core;
+using Game.Saving;
+using Game.Saving.Dto;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -7,7 +8,7 @@ namespace Game.Movement
 {
     [RequireComponent(typeof(NavMeshAgent))]
     [RequireComponent(typeof(Health))]
-    public class MovementController : MonoBehaviour, IActor
+    public class MovementController : MonoBehaviour, IActor, ISaveable
     {
         public NavMeshAgent agent { get; private set; }
         public Health health { get; private set; }
@@ -74,6 +75,19 @@ namespace Game.Movement
             if (agent && agent.hasPath)
             {
                 Gizmos.DrawLineStrip(agent.path.corners, false);
+            }
+        }
+
+        public object CaptureState()
+        {
+            return new SerializableVector3(agent.transform.position);
+        }
+
+        public void RestoreState(object state)
+        {
+            if (state is SerializableVector3 serializableVector3)
+            {
+                agent.Warp(serializableVector3.vector3);
             }
         }
     }

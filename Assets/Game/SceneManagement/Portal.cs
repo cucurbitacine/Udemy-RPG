@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Linq;
+using Game.Saving;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.SceneManagement;
@@ -15,8 +16,8 @@ namespace Game.SceneManagement
         public string sceneNameTarget = string.Empty;
         public string portalNameTarget = string.Empty;
 
-        [Space]
-        public Fader fader;
+        public Fader fader => Fader.Singleton;
+        public SavingWrapper saving => SavingWrapper.Singleton;
         
         private Coroutine _loading = null;
         
@@ -26,14 +27,18 @@ namespace Game.SceneManagement
             {
                 yield return fader.FadeIn();
             }
+
+            if (saving)
+            {
+                saving.Save();
+            }
             
             var loading = SceneManager.LoadSceneAsync(sceneNameTarget, LoadSceneMode.Single);
-            
-            if(loading!=null)
+
+            if (loading != null)
             {
                 loading.completed += SceneLoaded;
             }
-            
         }
         
         private void LoadScene()
@@ -73,7 +78,12 @@ namespace Game.SceneManagement
             {
                 portal.fader.FadeOut();
             }
-            
+
+            if (portal.saving)
+            {
+                portal.saving.Load();
+            }
+           
             var player = GameObject.FindWithTag("Player");
             if (player == null)
             {
@@ -90,6 +100,11 @@ namespace Game.SceneManagement
 
                 agent.Warp(position);
                 agent.transform.rotation = rotation;
+            }
+
+            if (portal.saving)
+            {
+                portal.saving.Save();
             }
         }
 
