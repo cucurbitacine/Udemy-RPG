@@ -204,4 +204,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fadeOutOnStart: 0
-  fadeDuration: 3
+  fadeDuration: 1

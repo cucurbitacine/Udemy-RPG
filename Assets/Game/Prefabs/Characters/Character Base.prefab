@@ -225,6 +225,7 @@ GameObject:
   - component: {fileID: 6737915270266544537}
   - component: {fileID: 8804130579999349832}
   - component: {fileID: 8123819679789379367}
+  - component: {fileID: 4882854531931325135}
   - component: {fileID: 6646410535669769590}
   - component: {fileID: 3275789768343789927}
   - component: {fileID: 186105050286967639}
@@ -322,6 +323,33 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 1, z: 0}
+--- !u!54 &4882854531931325135
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8292277377376639556}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!114 &6646410535669769590
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -412,12 +440,52 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5fb31a03f24880b43882f57d2c03ae98, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cooldown: 1
-  attackRange: 1
-  damage: 10
+  handRight: {fileID: 0}
+  defaultWeapon: {fileID: 11400000, guid: d00ab4131a52f8142b66c790ad19d475, type: 2}
+  currentWeapon: {fileID: 0}
+  weaponObject: {fileID: 0}
   lastTargetTimeSeen: 0
   lastTargetPosition: {x: 0, y: 0, z: 0}
   target: {fileID: 0}
+  centerAttack: {x: 0, y: 1.2, z: 0.8}
+  sizeAttack: {x: 2, y: 2, z: 2}
+  layerAttack:
+    serializedVersion: 2
+    m_Bits: 65
+  count: 0
+  overlap:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!114 &766928270640971544
 MonoBehaviour:
   m_ObjectHideFlags: 0

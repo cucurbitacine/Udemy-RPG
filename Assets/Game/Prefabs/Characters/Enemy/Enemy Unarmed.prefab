@@ -44,6 +44,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9639e9d47d84e26804d94afe146bd36, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  searchSpeed: 3
   durationSearch: 3
 --- !u!1 &350907383699079387
 GameObject:
@@ -235,9 +236,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66e140b468324159b92ec98d4b29a965, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  index: 0
-  threshold: 0.1
+  patrolSpeed: 2
   waitingTime: 3
+  threshold: 0.1
   path: {fileID: 0}
 --- !u!1 &7243923908206488105
 GameObject:
@@ -283,7 +284,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d703fa4446cc4141af0ce361e99a8984, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  chaseDistance: 5
+  chaseSpeed: 4
+  chaseDistance: 4
   player: {fileID: 0}
 --- !u!1001 &86209579261171297
 PrefabInstance:
@@ -296,7 +298,7 @@ PrefabInstance:
     - target: {fileID: 256271554752193649, guid: e0f45b4afc19be74e85275f5b2ed6dc1,
         type: 3}
       propertyPath: m_Name
-      value: Enemy Variant
+      value: Enemy Unarmed
       objectReference: {fileID: 0}
     - target: {fileID: 6418432100227487058, guid: e0f45b4afc19be74e85275f5b2ed6dc1,
         type: 3}

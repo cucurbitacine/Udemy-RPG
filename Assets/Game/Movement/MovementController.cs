@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Game.Core;
 using Game.Saving;
 using Game.Saving.Dto;
@@ -24,8 +25,11 @@ namespace Game.Movement
                 agent.ResetPath();
 
                 offset = Vector3.ClampMagnitude(offset, 1f);
+
+                var velocity = agent.velocity + offset * (agent.acceleration * Time.deltaTime);
+                velocity = Vector3.ClampMagnitude(velocity, agent.speed);
                 
-                agent.velocity = offset * agent.speed;
+                agent.velocity = velocity;
             }
         }
         
@@ -80,15 +84,32 @@ namespace Game.Movement
 
         public object CaptureState()
         {
-            return new SerializableVector3(agent.transform.position);
+            var data = new Dictionary<string, object>();
+            data.Add(positionName, new SerializableVector3(agent.transform.position));
+            data.Add(eulerAnglesName, new SerializableVector3(agent.transform.eulerAngles));
+            
+            return data;
         }
 
         public void RestoreState(object state)
         {
-            if (state is SerializableVector3 serializableVector3)
+            if (state is Dictionary<string, object> data)
             {
-                agent.Warp(serializableVector3.vector3);
+                if (data.TryGetValue(positionName, out var serializablePosition) &&
+                    serializablePosition is SerializableVector3 serializableVector3)
+                {
+                    agent.Warp(serializableVector3.vector3);
+                }
+                
+                if (data.TryGetValue(eulerAnglesName, out var serializableRotation) &&
+                    serializableRotation is SerializableVector3 serializableAngles)
+                {
+                    agent.transform.eulerAngles = serializableAngles.vector3;
+                }
             }
         }
+
+        private string positionName => nameof(transform.position);
+        private string eulerAnglesName => nameof(transform.eulerAngles);
     }
 }

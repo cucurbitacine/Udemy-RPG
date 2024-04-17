@@ -14,9 +14,9 @@ namespace Game.Control.Player.Inputs
 
             if (cameraMain && move != Vector3.zero)
             {
-                move.x = Input.GetAxis("Horizontal");
-                move.y = 0;
-                move.z = Input.GetAxis("Vertical");
+                //move.x = Input.GetAxis("Horizontal");
+                //move.y = 0;
+                //move.z = Input.GetAxis("Vertical");
                 
                 var forward = Vector3.ProjectOnPlane(cameraMain.transform.forward, Vector3.up).normalized;
                 var right = Vector3.ProjectOnPlane(cameraMain.transform.right, Vector3.up).normalized;

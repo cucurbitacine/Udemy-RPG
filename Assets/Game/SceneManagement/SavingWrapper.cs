@@ -74,19 +74,21 @@ namespace Game.SceneManagement
             }
             else if (Input.GetKeyDown(KeyCode.Escape))
             {
-                if (Application.isPlaying && !Application.isEditor)
+                if (Application.isPlaying)
                 {
                     Save();
                     
-                    Application.Quit();
+                    if (!Application.isEditor)
+                    {
+                        Application.Quit();
+                    }
                 }
             }
             else if (Input.GetKeyDown(KeyCode.R))
             {
                 saving.Delete(GetSaveFile());
 
-                var activeScene = SceneManager.GetActiveScene();
-                SceneManager.LoadScene(activeScene.buildIndex);
+                SceneManager.LoadScene(0);
             }
         }
     }

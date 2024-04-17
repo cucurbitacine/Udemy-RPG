@@ -9,6 +9,7 @@ namespace Game.Saving
 {
     public class SavingSystem : MonoBehaviour
     {
+        public string folder = "Saves";
         public string extension = ".sav";
         
         private const string SceneIndexKey = nameof(SceneIndexKey);
@@ -21,7 +22,7 @@ namespace Game.Saving
             
             RestoreState(state);
             
-            Debug.Log($"Load File <- {GetPathFromSaveFile(saveFile)}");
+            Debug.Log($"Load File <- {GetPathToSaveFile(saveFile)}");
         }
         
         public void Save(string saveFile)
@@ -32,7 +33,7 @@ namespace Game.Saving
             
             SaveFile(saveFile, state);
             
-            Debug.Log($"Save File -> {GetPathFromSaveFile(saveFile)}");
+            Debug.Log($"Save File -> {GetPathToSaveFile(saveFile)}");
         }
         
         public void Load(string saveFile)
@@ -41,12 +42,12 @@ namespace Game.Saving
             
             RestoreState(state);
             
-            Debug.Log($"Load File <- {GetPathFromSaveFile(saveFile)}");
+            Debug.Log($"Load File <- {GetPathToSaveFile(saveFile)}");
         }
 
         public void Delete(string saveFile)
         {
-            var path = GetPathFromSaveFile(saveFile);
+            var path = GetPathToSaveFile(saveFile);
 
             if (File.Exists(path))
             {
@@ -56,7 +57,14 @@ namespace Game.Saving
         
         private void SaveFile(string saveFile, Dictionary<string, object> state)
         {
-            var path = GetPathFromSaveFile(saveFile);
+            var pathToFolder = GetPathToSaveFolder();
+
+            if (!Directory.Exists(pathToFolder))
+            {
+                Directory.CreateDirectory(pathToFolder);
+            }
+            
+            var path = GetPathToSaveFile(saveFile);
 
             using var stream = File.Open(path, FileMode.Create);
             var formatter = new BinaryFormatter();
@@ -65,7 +73,7 @@ namespace Game.Saving
         
         private Dictionary<string, object> LoadFile(string saveFile)
         {
-            var path = GetPathFromSaveFile(saveFile);
+            var path = GetPathToSaveFile(saveFile);
 
             if (!File.Exists(path))
             {
@@ -78,9 +86,14 @@ namespace Game.Saving
             return (Dictionary<string, object>)formatter.Deserialize(stream);
         }
         
-        private string GetPathFromSaveFile(string saveFile)
+        private string GetPathToSaveFolder()
         {
-            return Path.Combine(Application.persistentDataPath, $"{saveFile}{extension}");
+            return Path.Combine(Application.persistentDataPath, folder);
+        }
+        
+        private string GetPathToSaveFile(string saveFile)
+        {
+            return Path.Combine(GetPathToSaveFolder(), $"{saveFile}{extension}");
         }
         
         private static void CaptureState(IDictionary<string, object> state)
