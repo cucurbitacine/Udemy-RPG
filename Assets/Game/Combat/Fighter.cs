@@ -1,7 +1,9 @@
+using System.Collections.Generic;
 using System.Linq;
 using Game.Core;
 using Game.Movement;
 using Game.Saving;
+using Game.Stats;
 using UnityEngine;
 
 namespace Game.Combat
@@ -9,7 +11,7 @@ namespace Game.Combat
     [RequireComponent(typeof(Animator))]
     [RequireComponent(typeof(MovementController))]
     [RequireComponent(typeof(CombatTarget))]
-    public class Fighter : MonoBehaviour, IActor, ISaveable
+    public class Fighter : MonoBehaviour, IActor, ISaveable, IModifier
     {
         [Header("Weapons")]
         public GameObject weaponObject;
@@ -151,12 +153,27 @@ namespace Game.Combat
             var size = sizeAttack * 0.5f;
             return Physics.OverlapBoxNonAlloc(center, size, overlap, transform.rotation, layerAttack, QueryTriggerInteraction.Collide);
         }
+
+        public float GetDamage()
+        {
+            if (TryGetComponent<BaseStats>(out var stats))
+            {
+                return stats.GetStat(StatsType.Damage);
+            }
+
+            return GetWeaponDamage();
+        }
+
+        private float GetWeaponDamage()
+        {
+            return currentWeapon ? currentWeapon.damage : 0f;
+        }
         
         private void DamageTarget(CombatTarget combatTarget)
         {
             if (currentWeapon && combatTarget)
             {
-                combatTarget.health.Damage(currentWeapon.damage);    
+                combatTarget.health.Damage(gameObject, GetDamage());    
             }
         }
         
@@ -257,6 +274,22 @@ namespace Game.Combat
             var center = transform.TransformPoint(centerAttack);
             var size = sizeAttack * 0.5f;
             Gizmos.DrawWireCube(center, size);
+        }
+
+        public IEnumerable<float> GetModifier(StatsType statsType)
+        {
+            if (statsType == StatsType.Damage)
+            {
+                yield return GetWeaponDamage();
+            }
+        }
+
+        public IEnumerable<float> GetPercentage(StatsType statsType)
+        {
+            if (currentWeapon)
+            {
+                yield return currentWeapon.percentageModifier;
+            }
         }
     }
 }

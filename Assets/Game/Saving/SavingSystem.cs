@@ -130,9 +130,6 @@ namespace Game.Saving
         {
             if (state.TryGetValue(SceneIndexKey, out var sceneState) && sceneState is int buildIndex)
             {
-                Debug.Log($"Need to Be on {SceneManager.GetSceneByBuildIndex(buildIndex).name} scene");
-                Debug.Log($"Now I am on {SceneManager.GetSceneByBuildIndex(SceneManager.GetActiveScene().buildIndex).name} scene");
-                
                 if (SceneManager.GetActiveScene().buildIndex != buildIndex)
                 {
                     Debug.Log($"Loading...");

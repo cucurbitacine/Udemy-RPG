@@ -1,3 +1,4 @@
+using Game.Attributes;
 using Game.Combat;
 using Game.Core;
 using Game.Movement;
@@ -17,6 +18,8 @@ namespace Game.Control.Player
         public Fighter fighter { get; private set; }
         public CombatTarget target { get; private set; }
         public ActionSchedule schedule { get; private set; }
+
+        public Health health => target.health;
         
         private void Awake()
         {

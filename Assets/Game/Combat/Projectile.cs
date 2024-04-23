@@ -16,17 +16,20 @@ namespace Game.Combat
         public bool canChaseTarget = false;
         public GameObject impactEffectPrefab;
         
-        [Space] public CombatTarget target;
+        [Space]
+        public GameObject source;
+        public CombatTarget target;
         
         private Coroutine _shooting;
         private float _time;
         private bool _hidden;
         
-        public void Shoot(CombatTarget combatTarget, float amountDamage)
+        public void Shoot(GameObject source, CombatTarget combatTarget, float amountDamage)
         {
             gameObject.SetActive(true);
 
             damage = amountDamage;
+            this.source = source;
             target = combatTarget;
 
             transform.LookAt(GetAim(target));
@@ -38,7 +41,7 @@ namespace Game.Combat
         {
             if (combatTarget.health.isDied) return;
             
-            combatTarget.health.Damage(damage);
+            combatTarget.health.Damage(source, damage);
 
             Impact(point, normal);
             

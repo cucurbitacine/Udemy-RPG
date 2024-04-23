@@ -1,14 +1,18 @@
+using System;
 using UnityEngine;
 
 namespace Game.Combat
 {
-    [CreateAssetMenu(menuName = "Weapons/Create Weapon", fileName = "Weapon", order = 0)]
+    [CreateAssetMenu(menuName = "RPG/Create Weapon", fileName = "Weapon", order = 0)]
     public class Weapon : ScriptableObject
     {
-        public float cooldown = 1f;
-        public float attackRange = 1f;
-        public float damage = 5f;
-        public bool isRightHand = true;
+        [Min(0f)] public float damage = 5f;
+        [Min(0f)] public float cooldown = 1f;
+        [SerializeField] private float _damagePerSec;
+        
+        [Space]
+        [Min(0f)] public float attackRange = 1f;
+        [Min(0f)] public float percentageModifier = 0f;
         
         [Space]
         public GameObject equipPrefab = null;
@@ -16,6 +20,7 @@ namespace Game.Combat
         public GameObject projectilePrefab = null;
         
         [Space]
+        public bool isRightHand = true;
         public AnimatorOverrideController animatorOverride = null;
         
         public void Equip(Fighter fighter)
@@ -63,7 +68,15 @@ namespace Game.Combat
 
             if (projectileObject.TryGetComponent<Projectile>(out var projectile))
             {
-                projectile.Shoot(fighter.target, damage);
+                projectile.Shoot(fighter.gameObject, fighter.target, fighter.GetDamage());
+            }
+        }
+
+        private void OnValidate()
+        {
+            if (cooldown > 0f)
+            {
+                _damagePerSec = damage / cooldown;
             }
         }
     }
