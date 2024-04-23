@@ -93,6 +93,12 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 11400000, guid: b5132f44bf9f7194db0ae61d86239163,
         type: 2}
+    - target: {fileID: -1847676456578139254, guid: 2ddf41ba141a86e41b05b787138e1b65,
+        type: 3}
+      propertyPath: weaponModel
+      value: 
+      objectReference: {fileID: 11400000, guid: b5132f44bf9f7194db0ae61d86239163,
+        type: 2}
     - target: {fileID: 3627814788498772518, guid: 2ddf41ba141a86e41b05b787138e1b65,
         type: 3}
       propertyPath: InitialModule.startColor.maxColor.b

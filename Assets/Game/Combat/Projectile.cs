@@ -1,3 +1,4 @@
+using Game.Core;
 using UnityEngine;
 
 namespace Game.Combat
@@ -19,6 +20,8 @@ namespace Game.Combat
         [Space]
         public GameObject source;
         public CombatTarget target;
+
+        [Header("SFX")] public SfxEffect impactSfx;
         
         private Coroutine _shooting;
         private float _time;
@@ -88,6 +91,11 @@ namespace Game.Combat
                         destroyer = impact.AddComponent<DestroyEffect>();
                     }
                 }
+            }
+
+            if (impactSfx)
+            {
+                impactSfx.Play();
             }
         }
         

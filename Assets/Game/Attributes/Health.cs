@@ -20,7 +20,9 @@ namespace Game.Attributes
         [Space]
         public bool isDied = false;
 
-        [Space] public UnityEvent onDied = new UnityEvent();
+        public UnityEvent<float> changed = new UnityEvent<float>();
+        public UnityEvent damaged = new UnityEvent();
+        public UnityEvent onDied  = new UnityEvent();
         
         private static readonly int TriggerDeath = Animator.StringToHash("Death");
 
@@ -30,17 +32,36 @@ namespace Game.Attributes
         
         public void Damage(GameObject source, float amount)
         {
-            if (amount > 0)
+            if (!isDied && amount > 0)
             {
-                points = Mathf.Max(0, points - amount);
-            }
-
-            if (points == 0f)
-            {
-                Die(source);
+                var value = Mathf.Max(0, points - amount);
+                
+                SetValues(value, total);
+                
+                if (points == 0f)
+                {
+                    if (source && source.TryGetComponent<XP>(out var xp))
+                    {
+                        var reward = stats.GetStat(StatsType.RewardXP);
+                        
+                        xp.Gain(reward);
+                    }
+                }
+                
+                damaged.Invoke();
             }
         }
 
+        public void Heal(float amount)
+        {
+            if (!isDied && amount > 0)
+            {
+                var value = Mathf.Min(points + amount, total);
+                
+                SetValues(value, total);
+            }
+        }
+        
         public void Die()
         {
             if (isDied) return;
@@ -51,26 +72,10 @@ namespace Game.Attributes
             
             onDied.Invoke();
         }
-
-        public void Die(GameObject source)
-        {
-            if (isDied) return;
-
-            Die();
-
-            if (source && source.TryGetComponent<XP>(out var xp))
-            {
-                if (gameObject.TryGetComponent<BaseStats>(out var stats))
-                {
-                    var reward = stats.GetStat(StatsType.RewardXP);
-                    xp.Gain(reward);
-                }
-            }
-        }
-
+        
         public void RestoreHealth()
         {
-            points = total;
+            SetValues(total, total);
         }
         
         public object CaptureState()
@@ -78,17 +83,29 @@ namespace Game.Attributes
             return new float[] { points, total };
         }
 
+        public void SetValues(float value, float max)
+        {
+            var delta = value - points;
+            
+            points = value;
+            total = max;
+            
+            if (points == 0f)
+            {
+                Die();
+            }
+
+            if (Mathf.Abs(delta) > 0f)
+            {
+                changed.Invoke(delta);
+            }
+        }
+        
         public void RestoreState(object state)
         {
             if (state is float[] array && array.Length == 2)
             {
-                points = array[0];
-                total = array[1];
-                
-                if (points == 0f)
-                {
-                    Die();
-                }
+                SetValues(array[0], array[1]);
             }
         }
 
@@ -96,19 +113,9 @@ namespace Game.Attributes
         {
             UpdateTotalHealth(level);
 
-            if (points > 0)
+            if (!isDied)
             {
-                points = total;
-            }
-        }
-
-        private void UpdateHealth()
-        {
-            points = Mathf.Clamp(points, 0, total);
-
-            if (points == 0)
-            {
-                Die();
+                RestoreHealth();
             }
         }
         
@@ -130,7 +137,7 @@ namespace Game.Attributes
             
             UpdateTotalHealth(stats.GetLevel());
 
-            UpdateHealth();
+            RestoreHealth();
         }
         
         private void OnDisable()

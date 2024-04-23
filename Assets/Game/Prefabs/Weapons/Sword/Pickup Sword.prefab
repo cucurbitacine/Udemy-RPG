@@ -34,6 +34,12 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 11400000, guid: d345e7df649b8344c9c09b4730e29e02,
         type: 2}
+    - target: {fileID: -1847676456578139254, guid: 2ddf41ba141a86e41b05b787138e1b65,
+        type: 3}
+      propertyPath: weaponModel
+      value: 
+      objectReference: {fileID: 11400000, guid: d345e7df649b8344c9c09b4730e29e02,
+        type: 2}
     - target: {fileID: 6880192378475512109, guid: 2ddf41ba141a86e41b05b787138e1b65,
         type: 3}
       propertyPath: m_Name

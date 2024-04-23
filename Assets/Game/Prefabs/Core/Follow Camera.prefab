@@ -26,8 +26,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5720527731094129612}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: 0, y: 0.92387956, z: -0.38268346, w: 0}
+  m_LocalPosition: {x: 0, y: 7.6, z: 6}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -46,7 +46,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   paused: 0
-  satellite: {fileID: 0}
+  satellite: {fileID: 3159931456481859919}
   height: 6
   radius: 6
   yaw: 0
@@ -78,4 +78,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   zoomSpeed: 0.5
   rotateSpeed: 4
-  cursorLockMode: 2
+  hideCursor: 1
+  cursorLockBusy: 1
+  cursorLockFree: 0

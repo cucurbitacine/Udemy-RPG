@@ -10,14 +10,30 @@ namespace Game.Movement
 {
     [RequireComponent(typeof(NavMeshAgent))]
     [RequireComponent(typeof(Health))]
+    [RequireComponent(typeof(ActionSchedule))]
     public class MovementController : MonoBehaviour, IActor, ISaveable
     {
         public NavMeshAgent agent { get; private set; }
         public Health health { get; private set; }
+        public ActionSchedule schedule { get; private set; }
         
         #region Public API
 
         public Vector3 position => transform.position;
+
+        public void ScheduledMove(Vector3 offset)
+        {
+            schedule.Run(this);
+            
+            Move(offset);
+        }
+        
+        public void ScheduledMoveAt(Vector3 point)
+        {
+            schedule.Run(this);
+            
+            MoveAt(point);
+        }
         
         public void Move(Vector3 offset)
         {
@@ -38,18 +54,20 @@ namespace Game.Movement
         {
             if (agent)
             {
-                agent.SetDestination(point);
+                var path = new NavMeshPath();
+
+                if (agent.CalculatePath(point, path) && path.status == NavMeshPathStatus.PathComplete)
+                {
+                    agent.SetDestination(point);
+                }
             }
         }
-
+        
         public void Stop()
         {
             if (agent)
             {
-                if (agent.hasPath)
-                {
-                    agent.ResetPath();
-                }
+                agent.ResetPath();
             }
         }
 
@@ -68,21 +86,6 @@ namespace Game.Movement
         
         #endregion
         
-        private void Awake()
-        {
-            agent = GetComponent<NavMeshAgent>();
-            health = GetComponent<Health>();
-            health.onDied.AddListener(() => agent.enabled = false);
-        }
-        
-        private void OnDrawGizmosSelected()
-        {
-            if (agent && agent.hasPath)
-            {
-                Gizmos.DrawLineStrip(agent.path.corners, false);
-            }
-        }
-
         public object CaptureState()
         {
             var data = new Dictionary<string, object>();
@@ -112,5 +115,22 @@ namespace Game.Movement
 
         private string positionName => nameof(transform.position);
         private string eulerAnglesName => nameof(transform.eulerAngles);
+        
+        private void Awake()
+        {
+            agent = GetComponent<NavMeshAgent>();
+            health = GetComponent<Health>();
+            schedule = GetComponent<ActionSchedule>();
+            
+            health.onDied.AddListener(() => agent.enabled = false);
+        }
+        
+        private void OnDrawGizmosSelected()
+        {
+            if (agent && agent.hasPath)
+            {
+                Gizmos.DrawLineStrip(agent.path.corners, false);
+            }
+        }
     }
 }

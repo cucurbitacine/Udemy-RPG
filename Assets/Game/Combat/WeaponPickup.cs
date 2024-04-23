@@ -1,63 +1,23 @@
-using Game.Saving;
+using Game.Core;
 using UnityEngine;
 
 namespace Game.Combat
 {
-    public class WeaponPickup : MonoBehaviour, ISaveable
+    public class WeaponPickup : PickupItem<Fighter>
     {
-        public Weapon weapon;
-        public float respawnTime = 5f;
-        
-        private void Respawn()
-        {
-            gameObject.SetActive(true);
-        }
-        
-        private void Hide(float duration)
-        {
-            gameObject.SetActive(false);
-            
-            Invoke(nameof(Respawn), duration);
-        }
+        [Header("Weapon")]
+        public WeaponModel weaponModel;
 
-        private void Hide()
+        protected override bool PickupTyped(Fighter t)
         {
-            Hide(respawnTime);
-        }
-        
-        private void OnTriggerEnter(Collider other)
-        {
-            if (weapon && other.CompareTag("Player"))
+            if (weaponModel)
             {
-                var fighter = other.GetComponent<Fighter>();
-
-                if (fighter)
-                {
-                    fighter.EquipWeapon(weapon);
-                    
-                    Hide();
-                }
+                t.EquipWeapon(weaponModel);
+                
+                return true;
             }
-        }
 
-        public object CaptureState()
-        {
-            return gameObject.activeSelf;
-        }
-
-        public void RestoreState(object state)
-        {
-            if (state is bool activeSelf)
-            {
-                if (activeSelf)
-                {
-                    Respawn();
-                }
-                else
-                {
-                    Hide();
-                }
-            }
+            return false;
         }
     }
 }

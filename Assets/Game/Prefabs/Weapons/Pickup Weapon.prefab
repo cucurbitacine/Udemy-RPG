@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6937319994665817151}
   - component: {fileID: 801792187363496928}
   - component: {fileID: 1488403741636355496}
-  m_Layer: 2
+  m_Layer: 0
   m_Name: Spot Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4961,7 +4961,7 @@ GameObject:
   - component: {fileID: 666899351445733956}
   - component: {fileID: 3086051414813190772}
   - component: {fileID: -8250523700101785230}
-  m_Layer: 2
+  m_Layer: 7
   m_Name: Pickup Weapon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4997,8 +4997,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb8db3b735685304085541152f58a36e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  weapon: {fileID: 0}
+  radiusPickup: 2.5
   respawnTime: 5
+  weaponModel: {fileID: 0}
 --- !u!114 &666899351445733956
 MonoBehaviour:
   m_ObjectHideFlags: 0

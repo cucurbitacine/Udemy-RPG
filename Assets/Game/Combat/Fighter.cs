@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using Game.Core;
 using Game.Movement;
 using Game.Saving;
@@ -11,14 +10,14 @@ namespace Game.Combat
     [RequireComponent(typeof(Animator))]
     [RequireComponent(typeof(MovementController))]
     [RequireComponent(typeof(CombatTarget))]
+    [RequireComponent(typeof(ActionSchedule))]
     public class Fighter : MonoBehaviour, IActor, ISaveable, IModifier
     {
         [Header("Weapons")]
-        public GameObject weaponObject;
+        public WeaponEquipped weaponEquipped;
         
         [Space]
-        public Weapon defaultWeapon;
-        public Weapon currentWeapon;
+        public WeaponModel defaultWeaponModel;
         
         [Header("Target")]
         public CombatTarget target;
@@ -27,11 +26,6 @@ namespace Game.Combat
         public float lastTargetTimeSeen = 0f;
         public Vector3 lastTargetPosition = Vector3.zero;
         
-        [Header("Attack")]
-        public Vector3 centerAttack = Vector3.forward;
-        public Vector3 sizeAttack = Vector3.one;
-        public LayerMask layerAttack = 1;
-        
         [Header("Joints")]
         public Transform handRight = null;
         public Transform handLeft = null;
@@ -39,11 +33,11 @@ namespace Game.Combat
         public MovementController movement { get; private set; }
         public CombatTarget selfTarget { get; private set; }
         public Animator animator { get; private set; }
+        public ActionSchedule schedule { get; private set; }
 
-        private float _lastAttack = float.MinValue;
-        private RuntimeAnimatorController _defaultAnimatorController;
+        public WeaponModel currentWeaponModel => weaponEquipped ? weaponEquipped.model : null;
         
-        private readonly Collider[] _overlap = new Collider[32];
+        private float _lastAttack = float.MinValue;
         
         private static readonly int TriggerAttack = Animator.StringToHash("Attack");
         private static readonly int TriggerStopAttack = Animator.StringToHash("StopAttack");
@@ -53,6 +47,7 @@ namespace Game.Combat
             if (combatTarget)
             {
                 if (combatTarget == selfTarget) return false;
+                if (combatTarget.health.isDied) return false;
                 
                 return combatTarget.health.points > 0;
             }
@@ -62,9 +57,9 @@ namespace Game.Combat
         
         public void Attack()
         {
-            if (!currentWeapon) return;
+            if (!currentWeaponModel) return;
             
-            if (Time.time - _lastAttack < currentWeapon.cooldown) return;
+            if (Time.time - _lastAttack < currentWeaponModel.cooldown) return;
 
             if (target)
             {
@@ -76,6 +71,8 @@ namespace Game.Combat
                     return;
                 }
             }
+
+            schedule.Run(this);
             
             _lastAttack = Time.time;
 
@@ -110,19 +107,19 @@ namespace Game.Combat
             ResetTarget();
         }
 
-        public void EquipWeapon(Weapon weapon)
+        public void EquipWeapon(WeaponModel weaponModel)
         {
-            if (weapon)
+            if (weaponModel)
             {
-                weapon.Equip(this);
+                weaponModel.Equip(this);
             }
         }
         
         public object CaptureState()
         {
-            if (currentWeapon)
+            if (currentWeaponModel)
             {
-                return currentWeapon.name;
+                return currentWeaponModel.name;
             }
 
             return null;
@@ -132,9 +129,12 @@ namespace Game.Combat
         {
             if (state is string weaponName)
             {
-                var weapon = Resources.Load<Weapon>(weaponName);
-                
-                EquipWeapon(weapon);
+                var weapon = Resources.Load<WeaponModel>(weaponName);
+
+                if (weapon)
+                {
+                    EquipWeapon(weapon);
+                }
             }
         }
 
@@ -145,13 +145,6 @@ namespace Game.Combat
             {
                 animator.runtimeAnimatorController = overideController.runtimeAnimatorController;
             }
-        }
-        
-        private int Overlap(Collider[] overlap)
-        {
-            var center = transform.TransformPoint(centerAttack);
-            var size = sizeAttack * 0.5f;
-            return Physics.OverlapBoxNonAlloc(center, size, overlap, transform.rotation, layerAttack, QueryTriggerInteraction.Collide);
         }
 
         public float GetDamage()
@@ -166,51 +159,53 @@ namespace Game.Combat
 
         private float GetWeaponDamage()
         {
-            return currentWeapon ? currentWeapon.damage : 0f;
+            return currentWeaponModel ? currentWeaponModel.damage : 0f;
         }
         
         private void DamageTarget(CombatTarget combatTarget)
         {
-            if (currentWeapon && combatTarget)
+            if (currentWeaponModel && combatTarget)
             {
-                combatTarget.health.Damage(gameObject, GetDamage());    
+                combatTarget.health.Damage(gameObject, GetDamage());
+                
+                if (weaponEquipped)
+                {
+                    weaponEquipped.Sfx();
+                }
             }
         }
-        
-        private void DamageTarget()
+
+        // Animation event
+        private void Hit()
         {
             if (target)
             {
                 DamageTarget(target);
             }
-            else
-            {
-                var count = Overlap(_overlap);
-                foreach (var cld in _overlap.Take(count))
-                {
-                    if (cld.TryGetComponent<CombatTarget>(out var cldTarget))
-                    {
-                        if (CanAttack(cldTarget))
-                        {
-                            DamageTarget(cldTarget);
-                        }
-                    }
-                }
-            }
-        }
-        
-        // Animation event
-        private void Hit()
-        {
-            DamageTarget();
         }
 
         // Animation event
         private void Shoot()
         {
-            if (currentWeapon)
+            if (currentWeaponModel)
             {
-                currentWeapon.Shoot(this);
+                currentWeaponModel.Shoot(this);
+            }
+        }
+        
+        public IEnumerable<float> GetModifier(StatsType statsType)
+        {
+            if (statsType == StatsType.Damage)
+            {
+                yield return GetWeaponDamage();
+            }
+        }
+
+        public IEnumerable<float> GetPercentage(StatsType statsType)
+        {
+            if (currentWeaponModel)
+            {
+                yield return currentWeaponModel.percentageModifier;
             }
         }
         
@@ -219,22 +214,21 @@ namespace Game.Combat
             movement = GetComponent<MovementController>();
             animator = GetComponent<Animator>();
             selfTarget = GetComponent<CombatTarget>();
-
-            _defaultAnimatorController = animator.runtimeAnimatorController;
+            schedule = GetComponent<ActionSchedule>();
         }
 
-        private void Start()
+        private void OnEnable()
         {
-            EquipWeapon(currentWeapon ? currentWeapon : defaultWeapon);
+            EquipWeapon(currentWeaponModel ? currentWeaponModel : defaultWeaponModel);
         }
 
         private void Update()
         {
-            if (target && movement && currentWeapon)
+            if (!selfTarget.health.isDied && target && movement && currentWeaponModel)
             {
                 lastTargetPosition = target.transform.position;
                 
-                if (Vector3.Distance(movement.position, target.transform.position) < currentWeapon.attackRange)
+                if (Vector3.Distance(movement.position, target.transform.position) < currentWeaponModel.attackRange)
                 {
                     movement.Stop();
 
@@ -262,33 +256,13 @@ namespace Game.Combat
                 Gizmos.DrawWireSphere(lastTargetPosition, 0.2f);
             }
 
-            var weapon = currentWeapon;
-            if (weapon == null) weapon = defaultWeapon;
+            var weapon = currentWeaponModel;
+            if (weapon == null) weapon = defaultWeaponModel;
             
             if (weapon)
             {
                 Gizmos.color = Color.red;
                 Gizmos.DrawWireSphere(transform.position, weapon.attackRange);
-            }
-            
-            var center = transform.TransformPoint(centerAttack);
-            var size = sizeAttack * 0.5f;
-            Gizmos.DrawWireCube(center, size);
-        }
-
-        public IEnumerable<float> GetModifier(StatsType statsType)
-        {
-            if (statsType == StatsType.Damage)
-            {
-                yield return GetWeaponDamage();
-            }
-        }
-
-        public IEnumerable<float> GetPercentage(StatsType statsType)
-        {
-            if (currentWeapon)
-            {
-                yield return currentWeapon.percentageModifier;
             }
         }
     }

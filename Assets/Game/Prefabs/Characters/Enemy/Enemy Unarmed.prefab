@@ -286,6 +286,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   chaseSpeed: 4
   chaseDistance: 4
+  provocated: 0
+  provocationTimer: 0
+  provocationDuration: 5
   player: {fileID: 0}
 --- !u!1001 &86209579261171297
 PrefabInstance:
@@ -635,6 +638,11 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 7512264016923820463, guid: e0f45b4afc19be74e85275f5b2ed6dc1,
+        type: 3}
+      propertyPath: damaged.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 6861326310275915777}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:

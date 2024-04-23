@@ -158,6 +158,26 @@ PrefabInstance:
       propertyPath: destroyOnHit.Array.data[1]
       value: 
       objectReference: {fileID: 8002159552197736229}
+    - target: {fileID: 6583630865124679770, guid: 3ce24f270abab7d4aa12f681bb91ddb1,
+        type: 3}
+      propertyPath: clips.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 6583630865124679770, guid: 3ce24f270abab7d4aa12f681bb91ddb1,
+        type: 3}
+      propertyPath: clips.Array.data[0]
+      value: 
+      objectReference: {fileID: 8300000, guid: 0d3d7afb5ec538343a9fd9d4235bdefa, type: 3}
+    - target: {fileID: 6583630865124679770, guid: 3ce24f270abab7d4aa12f681bb91ddb1,
+        type: 3}
+      propertyPath: clips.Array.data[1]
+      value: 
+      objectReference: {fileID: 8300000, guid: c82b5c917dd599d42aabfb3c5875da2d, type: 3}
+    - target: {fileID: 6583630865124679770, guid: 3ce24f270abab7d4aa12f681bb91ddb1,
+        type: 3}
+      propertyPath: clips.Array.data[2]
+      value: 
+      objectReference: {fileID: 8300000, guid: bf03f714419c3b048ad4ff8b370d10d4, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
